@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>ASH Experiment Summary</title>
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<style>
+:root {
+    --crl-white: #FFFFFF;
+    --crl-neutral-1: #F5F7FA;
+    --crl-neutral-3: #D6DBE7;
+    --crl-neutral-4: #C0C6D9;
+    --crl-neutral-5: #7E89A9;
+    --crl-neutral-6: #475872;
+    --crl-neutral-7: #394455;
+    --crl-neutral-8: #242A35;
+    --crl-black: #060C12;
+    --crl-primary-1: #E6DDFF;
+    --crl-primary-2: #CBBCFC;
+    --crl-primary-3: #6933FF;
+    --crl-primary-4: #501FE5;
+    --crl-primary-5: #300D8F;
+    --crl-info-2: #89B0FF;
+    --crl-info-3: #0055FF;
+    --crl-success-2: #A5DD8D;
+    --crl-success-3: #37A806;
+    --crl-warning-3: #FFA53B;
+    --crl-danger-3: #FF3B4E;
+    --crl-teal: #00E5CC;
+    --crl-gradient-purple: #6B4FBB;
+    --crl-bg: var(--crl-black);
+    --crl-surface: var(--crl-neutral-8);
+    --crl-border: var(--crl-neutral-7);
+}
+html, body {
+    margin: 0; padding: 0;
+    background: var(--crl-bg); color: #fff;
+    font-family: 'Inter', sans-serif;
+    overflow: hidden; height: 100vh; width: 100vw;
+}
+.font-display { font-family: 'Space Grotesk', sans-serif; }
+.font-mono { font-family: 'JetBrains Mono', monospace; }
+#deck {
+    width: 100vw; height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+}
+.slide {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    display: none;
+}
+.slide.active { display: block !important; }
+.slide > div {
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 1280px; height: 720px;
+    transform-origin: center center;
+}
+.card { background: var(--crl-surface); border: 1px solid var(--crl-border); border-radius: 12px; }
+.card-glass { background: rgba(36,42,53,0.6); border: 1px solid var(--crl-border); backdrop-filter: blur(10px); border-radius: 12px; }
+.code-window { background: var(--crl-bg); border: 1px solid var(--crl-border); border-radius: 12px; overflow: hidden; }
+.code-titlebar { display: flex; align-items: center; padding: 8px 16px; border-bottom: 1px solid var(--crl-border); }
+.crl-pattern {
+    position: absolute; top: 0; left: 0;
+    width: 400px; height: 400px; opacity: 0.06;
+    background-image: repeating-linear-gradient(-45deg, transparent, transparent 8px, #00E5CC 8px, #00E5CC 9px);
+    mask-image: radial-gradient(ellipse at top left, black 0%, transparent 70%);
+    -webkit-mask-image: radial-gradient(ellipse at top left, black 0%, transparent 70%);
+    z-index: 0;
+}
+.crl-logo-full {
+    background-image: url("data:image/png;base64,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");
+    background-size: contain; background-repeat: no-repeat; background-position: center;
+}
+.crl-logo-beetle {
+    background-image: url("data:image/png;base64,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");
+    background-size: contain; background-repeat: no-repeat; background-position: center;
+}
+.metric-bar { height: 20px; border-radius: 4px; min-width: 2px; }
+.table-cell { padding: 6px 10px; border-bottom: 1px solid var(--crl-border); font-size: 13px; }
+.table-header { padding: 6px 10px; border-bottom: 2px solid var(--crl-border); font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; }
+</style>
+</head>
+<body>
+<div id="deck">
+
+<!-- Slide 0: Title -->
+<div class="slide" data-index="0">
+  <div class="w-[1280px] h-[720px] flex flex-col relative overflow-hidden mx-auto shadow-2xl" style="background:var(--crl-bg)">
+    <div class="crl-pattern"></div>
+    <div class="absolute top-[30%] left-[40%] w-[400px] h-[400px] rounded-full mix-blend-screen filter blur-[150px] opacity-10" style="background:var(--crl-primary-3)"></div>
+    <div class="flex-1 flex flex-col items-center justify-center z-10 px-16">
+      <div class="crl-logo-full mb-10" style="width:320px;height:45px;opacity:0.9"></div>
+      <h1 class="text-5xl font-display font-bold text-white leading-tight text-center mb-4">Active Session History (ASH)</h1>
+      <p class="text-xl font-light text-center mb-2" style="color:var(--crl-neutral-4)">Experiment Summary &amp; Analysis</p>
+      <p class="text-sm font-mono text-center mt-6" style="color:var(--crl-neutral-6)">Cluster: alyshan-exp | 3 CockroachDB nodes + 1 workload node | April 14, 2026</p>
+    </div>
+  </div>
+</div>
+
+<!-- Slide 1: Experiment Overview -->
+<div class="slide" data-index="1">
+  <div class="w-[1280px] h-[720px] flex flex-col relative overflow-hidden mx-auto shadow-2xl p-10" style="background:var(--crl-bg)">
+    <div class="crl-logo-beetle absolute top-6 right-6 z-10" style="width:36px;height:36px;opacity:0.9"></div>
+    <div class="crl-pattern"></div>
+    <div class="flex flex-col mb-3 z-10">
+      <div class="flex items-center gap-4 mb-2">
+        <div class="w-6 rounded-full" style="height:9px;background:var(--crl-teal)"></div>
+        <h2 class="text-lg font-mono uppercase tracking-widest" style="color:var(--crl-teal)">Overview</h2>
+      </div>
+      <h1 class="text-3xl font-display font-bold text-white">Experiment Timeline &amp; Setup</h1>
+    </div>
+    <div class="flex-1 flex gap-5 z-10">
+      <div class="flex-1 flex flex-col gap-2">
+        <div class="card-glass rounded-xl p-3">
+          <h3 class="font-bold mb-1 text-sm" style="color:var(--crl-neutral-3)">Cluster Configuration</h3>
+          <p class="text-xs font-mono" style="color:var(--crl-neutral-5)">4x n2-standard-4 | us-east1-c | v26.3.0-alpha</p>
+          <p class="text-xs font-mono mt-1" style="color:var(--crl-neutral-5)">obs.ash.enabled = true | obs.ash.response_limit = 200,000</p>
+        </div>
+        <div class="card-glass rounded-xl p-3 flex-1" style="overflow-y:auto">
+          <h3 class="font-bold mb-2 text-sm" style="color:var(--crl-neutral-3)">Workload Timeline (UTC)</h3>
+          <table class="w-full">
+            <tr><td class="table-header font-mono" style="color:var(--crl-neutral-5);padding:4px 8px">Workload</td><td class="table-header font-mono" style="color:var(--crl-neutral-5);padding:4px 8px">Time</td><td class="table-header font-mono" style="color:var(--crl-neutral-5);padding:4px 8px">Parameters</td></tr>
+            <tr>
+              <td class="table-cell" style="color:var(--crl-danger-3);padding:4px 8px;font-size:12px">KV c64</td>
+              <td class="table-cell font-mono" style="color:var(--crl-neutral-4);padding:4px 8px;font-size:11px">16:44&ndash;16:50</td>
+              <td class="table-cell font-mono" style="color:var(--crl-neutral-5);padding:4px 8px;font-size:10px">--zipfian --read-percent 10 --batch 100 --concurrency 64</td>
+            </tr>
+            <tr>
+              <td class="table-cell" style="color:var(--crl-warning-3);padding:4px 8px;font-size:12px">KV c16</td>
+              <td class="table-cell font-mono" style="color:var(--crl-neutral-4);padding:4px 8px;font-size:11px">16:51&ndash;16:53</td>
+              <td class="table-cell font-mono" style="color:var(--crl-neutral-5);padding:4px 8px;font-size:10px">--zipfian --read-percent 10 --batch 100 --concurrency 16</td>
+            </tr>
+            <tr>
+              <td class="table-cell" style="color:var(--crl-info-2);padding:4px 8px;font-size:12px">KV 64KB</td>
+              <td class="table-cell font-mono" style="color:var(--crl-neutral-4);padding:4px 8px;font-size:11px">16:54&ndash;17:10</td>
+              <td class="table-cell font-mono" style="color:var(--crl-neutral-5);padding:4px 8px;font-size:10px">--read-percent 10 --batch 10 --min/max-block-bytes=65536 --concurrency 16</td>
+            </tr>
+            <tr>
+              <td class="table-cell" style="color:var(--crl-primary-2);padding:4px 8px;font-size:12px">TPC-C Import</td>
+              <td class="table-cell font-mono" style="color:var(--crl-neutral-4);padding:4px 8px;font-size:11px">16:46&ndash;17:23</td>
+              <td class="table-cell font-mono" style="color:var(--crl-neutral-5);padding:4px 8px;font-size:10px">workload init tpcc --warehouses=100</td>
+            </tr>
+            <tr>
+              <td class="table-cell" style="color:var(--crl-success-2);padding:4px 8px;font-size:12px">Backup</td>
+              <td class="table-cell font-mono" style="color:var(--crl-neutral-4);padding:4px 8px;font-size:11px">17:17&ndash;17:18</td>
+              <td class="table-cell font-mono" style="color:var(--crl-neutral-5);padding:4px 8px;font-size:10px">BACKUP DATABASE tpcc INTO 'nodelocal://1/ash-backup-test'</td>
+            </tr>
+            <tr>
+              <td class="table-cell" style="color:var(--crl-neutral-4);padding:4px 8px;font-size:12px">System</td>
+              <td class="table-cell font-mono" style="color:var(--crl-neutral-4);padding:4px 8px;font-size:11px">16:44&ndash;17:23</td>
+              <td class="table-cell font-mono" style="color:var(--crl-neutral-5);padding:4px 8px;font-size:10px">~95k samples (intent resolution, heartbeats, GC, etc.)</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+      <div class="flex-1">
+        <img src="05-metrics-overview-full.png" style="width:100%;border-radius:12px;border:1px solid var(--crl-border);" alt="DB Console Overview">
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Slide 2: KV c64 Lock Contention -->
+<div class="slide" data-index="2">
+  <div class="w-[1280px] h-[720px] flex flex-col relative overflow-hidden mx-auto shadow-2xl p-10" style="background:var(--crl-bg)">
+    <div class="crl-logo-beetle absolute top-6 right-6 z-10" style="width:36px;height:36px;opacity:0.9"></div>
+    <div class="crl-pattern"></div>
+    <div class="flex flex-col mb-3 z-10">
+      <div class="flex items-center gap-4 mb-2">
+        <div class="w-6 rounded-full" style="height:9px;background:var(--crl-danger-3)"></div>
+        <h2 class="text-lg font-mono uppercase tracking-widest" style="color:var(--crl-danger-3)">Lock Contention</h2>
+      </div>
+      <h1 class="text-3xl font-display font-bold text-white">KV Concurrency 64 &mdash; Contention-Bound</h1>
+      <p class="mt-1 text-sm font-light" style="color:var(--crl-neutral-5)">zipfian distribution, --batch 100, 16:44&ndash;16:50 UTC</p>
+    </div>
+    <div class="flex-1 flex gap-5 z-10">
+      <div class="flex-1 flex flex-col gap-3">
+        <div class="card-glass rounded-xl p-3">
+          <h3 class="font-bold mb-2 text-sm" style="color:var(--crl-neutral-3)"><i class="fa-solid fa-chart-bar mr-2" style="color:var(--crl-danger-3)"></i>ASH Event Distribution</h3>
+          <div class="space-y-1">
+            <div class="flex items-center gap-3"><span class="text-xs font-mono w-24" style="color:var(--crl-neutral-4)">NETWORK</span><div class="metric-bar" style="width:38%;background:var(--crl-info-3);height:16px"></div><span class="text-xs font-mono" style="color:var(--crl-neutral-5)">38.2%</span></div>
+            <div class="flex items-center gap-3"><span class="text-xs font-mono w-24" style="color:var(--crl-neutral-4)">CPU</span><div class="metric-bar" style="width:32%;background:var(--crl-teal);height:16px"></div><span class="text-xs font-mono" style="color:var(--crl-neutral-5)">32.4%</span></div>
+            <div class="flex items-center gap-3"><span class="text-xs font-mono w-24" style="color:var(--crl-neutral-4)">LOCK</span><div class="metric-bar" style="width:29%;background:var(--crl-danger-3);height:16px"></div><span class="text-xs font-mono" style="color:var(--crl-neutral-5)">28.8%</span></div>
+          </div>
+        </div>
+        <div class="code-window" style="font-size:10px">
+          <div class="code-titlebar"><span class="text-xs font-mono" style="color:var(--crl-neutral-5)">ASH Query</span></div>
+          <pre class="p-3 font-mono" style="color:var(--crl-teal);line-height:1.4;margin:0"><code>SELECT work_event_type, work_event,
+       count(*) AS samples
+FROM crdb_internal.cluster_active_session_history
+WHERE app_name = 'kv'
+  AND workload_type = 'STATEMENT'
+  AND sample_time BETWEEN '16:44' AND '16:50'
+GROUP BY 1, 2 ORDER BY samples DESC;</code></pre>
+        </div>
+        <div class="p-3 rounded-lg" style="background:rgba(255,59,78,0.08);border:1px solid rgba(255,59,78,0.2)">
+          <p class="text-sm" style="color:var(--crl-neutral-4)"><i class="fa-solid fa-bolt mr-1" style="color:var(--crl-danger-3)"></i><span class="font-bold" style="color:var(--crl-danger-3)">Key Insight:</span> SQL stats and the contention graph tell you there <em>is</em> contention, but not what <em>kind</em>. ASH reveals it is <span class="font-mono">LockWait</span> (14,164 samples &mdash; transaction-level lock conflicts on hot keys), not <span class="font-mono">LatchWait</span> (1,401 &mdash; internal serialization). This distinction matters: LockWait means application-level key distribution is the problem.</p>
+        </div>
+      </div>
+      <div class="flex-1 flex flex-col gap-3">
+        <img src="12-sql-contention-graph.png" style="width:100%;border-radius:12px;border:1px solid var(--crl-border);" alt="SQL Contention Graph">
+        <div class="card-glass rounded-xl p-3">
+          <h3 class="font-bold mb-1 text-sm" style="color:var(--crl-neutral-3)">Top ASH Events</h3>
+          <div class="text-xs font-mono space-y-1" style="color:var(--crl-neutral-4)">
+            <div>DistSenderRemote &nbsp;<span style="color:var(--crl-info-2)">20,681</span> &bull; upsert &nbsp;<span style="color:var(--crl-teal)">17,057</span> &bull; LockWait &nbsp;<span style="color:var(--crl-danger-3)">14,164</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Slide 3: KV 64KB Blocks - Admission Control -->
+<div class="slide" data-index="3">
+  <div class="w-[1280px] h-[720px] flex flex-col relative overflow-hidden mx-auto shadow-2xl p-10" style="background:var(--crl-bg)">
+    <div class="crl-logo-beetle absolute top-6 right-6 z-10" style="width:36px;height:36px;opacity:0.9"></div>
+    <div class="crl-pattern"></div>
+    <div class="flex flex-col mb-3 z-10">
+      <div class="flex items-center gap-4 mb-2">
+        <div class="w-6 rounded-full" style="height:9px;background:var(--crl-warning-3)"></div>
+        <h2 class="text-lg font-mono uppercase tracking-widest" style="color:var(--crl-warning-3)">Admission Control</h2>
+      </div>
+      <h1 class="text-3xl font-display font-bold text-white">KV 64KB Blocks &mdash; Throughput-Bound</h1>
+      <p class="mt-1 text-sm font-light" style="color:var(--crl-neutral-5)">--batch 10, --min/max-block-bytes=65536, 16:54&ndash;17:10 UTC | TPC-C imports overlapping (16:46&ndash;17:23)</p>
+    </div>
+    <div class="flex-1 flex gap-5 z-10">
+      <div class="flex-1 flex flex-col gap-3">
+        <div class="card-glass rounded-xl p-3">
+          <h3 class="font-bold mb-2 text-sm" style="color:var(--crl-neutral-3)"><i class="fa-solid fa-chart-bar mr-2" style="color:var(--crl-warning-3)"></i>ASH Event Distribution</h3>
+          <div class="space-y-1">
+            <div class="flex items-center gap-2"><span class="text-xs font-mono w-24" style="color:var(--crl-neutral-4)">NETWORK</span><div class="metric-bar" style="width:38%;background:var(--crl-info-3);height:14px"></div><span class="text-xs font-mono" style="color:var(--crl-neutral-5)">37.7%</span></div>
+            <div class="flex items-center gap-2"><span class="text-xs font-mono w-24" style="color:var(--crl-neutral-4)">ADMISSION</span><div class="metric-bar" style="width:34%;background:var(--crl-warning-3);height:14px"></div><span class="text-xs font-mono" style="color:var(--crl-neutral-5)">34.2%</span></div>
+            <div class="flex items-center gap-2"><span class="text-xs font-mono w-24" style="color:var(--crl-neutral-4)">OTHER</span><div class="metric-bar" style="width:19%;background:var(--crl-primary-2);height:14px"></div><span class="text-xs font-mono" style="color:var(--crl-neutral-5)">19.2%</span></div>
+            <div class="flex items-center gap-2"><span class="text-xs font-mono w-24" style="color:var(--crl-neutral-4)">CPU</span><div class="metric-bar" style="width:8%;background:var(--crl-teal);height:14px"></div><span class="text-xs font-mono" style="color:var(--crl-neutral-5)">8.4%</span></div>
+          </div>
+        </div>
+        <div class="code-window" style="font-size:10px">
+          <div class="code-titlebar"><span class="text-xs font-mono" style="color:var(--crl-neutral-5)">ASH Query</span></div>
+          <pre class="p-2 font-mono" style="color:var(--crl-teal);line-height:1.3;margin:0"><code>SELECT work_event_type, work_event,
+       count(*) AS samples
+FROM crdb_internal.cluster_active_session_history
+WHERE app_name = 'kv'
+  AND sample_time BETWEEN '16:54' AND '17:10'
+GROUP BY 1, 2 ORDER BY samples DESC;</code></pre>
+        </div>
+        <div class="p-3 rounded-lg" style="background:rgba(255,165,59,0.08);border:1px solid rgba(255,165,59,0.2)">
+          <p class="text-sm" style="color:var(--crl-neutral-4)"><i class="fa-solid fa-bolt mr-1" style="color:var(--crl-warning-3)"></i><span class="font-bold" style="color:var(--crl-warning-3)">Key Insight:</span> Both foreground (KV) and background (TPC-C imports) show admission pressure simultaneously. ASH attributes admission events to specific <span class="font-mono">workload_id</span>s &mdash; you can see the exact statement fingerprint or job ID being throttled, not just aggregate token exhaustion.</p>
+        </div>
+      </div>
+      <div class="flex-1 flex flex-col gap-3">
+        <img src="13-admission-foreground-background.png" style="width:100%;border-radius:12px;border:1px solid var(--crl-border);max-height:240px;object-fit:cover;object-position:top;" alt="Admission Foreground/Background">
+        <div class="flex gap-3">
+          <img src="14-io-overload.png" style="width:48%;border-radius:8px;border:1px solid var(--crl-border);max-height:140px;object-fit:cover;object-position:top;" alt="IO Overload">
+          <img src="15-elastic-cpu-tokens.png" style="width:48%;border-radius:8px;border:1px solid var(--crl-border);max-height:140px;object-fit:cover;object-position:top;" alt="Elastic CPU Tokens">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Slide 4: Bottleneck Shift Comparison -->
+<div class="slide" data-index="4">
+  <div class="w-[1280px] h-[720px] flex flex-col relative overflow-hidden mx-auto shadow-2xl p-10" style="background:var(--crl-bg)">
+    <div class="crl-logo-beetle absolute top-6 right-6 z-10" style="width:36px;height:36px;opacity:0.9"></div>
+    <div class="crl-pattern"></div>
+    <div class="flex flex-col mb-4 z-10">
+      <div class="flex items-center gap-4 mb-2">
+        <div class="w-6 rounded-full" style="height:9px;background:var(--crl-primary-3)"></div>
+        <h2 class="text-lg font-mono uppercase tracking-widest" style="color:var(--crl-primary-3)">Comparison</h2>
+      </div>
+      <h1 class="text-3xl font-display font-bold text-white">ASH Captures Bottleneck Shifts</h1>
+      <p class="mt-1 text-sm font-light" style="color:var(--crl-neutral-5)">Same cluster, different workload parameters &rarr; completely different bottleneck profiles</p>
+    </div>
+    <div class="flex-1 flex gap-6 z-10">
+      <div class="flex-1 rounded-xl p-5" style="background:rgba(36,42,53,0.4);border:1px solid var(--crl-border);border-top:4px solid var(--crl-danger-3)">
+        <h3 class="text-base font-bold mb-1" style="color:var(--crl-danger-3)">KV c64 Zipfian</h3>
+        <p class="text-xs mb-2" style="color:var(--crl-neutral-5)">High concurrency + skewed keys</p>
+        <p class="text-xs font-bold mb-2" style="color:var(--crl-warning-3)">~10k samples/min &mdash; heavy cluster load</p>
+        <div class="space-y-2">
+          <div class="flex items-center gap-2"><div class="w-3 h-3 rounded" style="background:var(--crl-info-3)"></div><span class="text-xs" style="color:var(--crl-neutral-4)">NETWORK 38%</span></div>
+          <div class="flex items-center gap-2"><div class="w-3 h-3 rounded" style="background:var(--crl-teal)"></div><span class="text-xs" style="color:var(--crl-neutral-4)">CPU 32%</span></div>
+          <div class="flex items-center gap-2"><div class="w-3 h-3 rounded" style="background:var(--crl-danger-3)"></div><span class="text-xs font-bold" style="color:var(--crl-danger-3)">LOCK 29%</span></div>
+          <div class="flex items-center gap-2"><div class="w-3 h-3 rounded" style="background:var(--crl-neutral-6)"></div><span class="text-xs" style="color:var(--crl-neutral-4)">ADMISSION 0%</span></div>
+        </div>
+        <p class="text-xs mt-3 font-bold" style="color:var(--crl-danger-3)">Contention-bound</p>
+      </div>
+      <div class="flex-1 rounded-xl p-5" style="background:rgba(36,42,53,0.4);border:1px solid var(--crl-border);border-top:4px solid var(--crl-warning-3)">
+        <h3 class="text-base font-bold mb-1" style="color:var(--crl-warning-3)">KV c16 Zipfian</h3>
+        <p class="text-xs mb-2" style="color:var(--crl-neutral-5)">Lower concurrency + skewed keys</p>
+        <p class="text-xs font-bold mb-2" style="color:var(--crl-success-2)">~2.6k samples/min &mdash; 4x less work</p>
+        <div class="space-y-2">
+          <div class="flex items-center gap-2"><div class="w-3 h-3 rounded" style="background:var(--crl-teal)"></div><span class="text-xs" style="color:var(--crl-neutral-4)">CPU 34% (upsert execution)</span></div>
+          <div class="flex items-center gap-2"><div class="w-3 h-3 rounded" style="background:var(--crl-danger-3)"></div><span class="text-xs" style="color:var(--crl-neutral-4)">LOCK 33%</span></div>
+          <div class="flex items-center gap-2"><div class="w-3 h-3 rounded" style="background:var(--crl-info-3)"></div><span class="text-xs" style="color:var(--crl-neutral-4)">NETWORK 32%</span></div>
+          <div class="flex items-center gap-2"><div class="w-3 h-3 rounded" style="background:var(--crl-neutral-6)"></div><span class="text-xs" style="color:var(--crl-neutral-4)">ADMISSION 0%</span></div>
+        </div>
+        <p class="text-xs mt-3 font-bold" style="color:var(--crl-warning-3)">Balanced &mdash; no single bottleneck</p>
+      </div>
+      <div class="flex-1 rounded-xl p-5" style="background:rgba(36,42,53,0.8);border:1px solid var(--crl-border);border-top:4px solid var(--crl-success-3)">
+        <h3 class="text-base font-bold mb-1" style="color:var(--crl-info-2)">KV 64KB Uniform</h3>
+        <p class="text-xs mb-2" style="color:var(--crl-neutral-5)">Large values + uniform keys</p>
+        <p class="text-xs font-bold mb-2" style="color:var(--crl-warning-3)">~5.7k samples/min</p>
+        <div class="space-y-2">
+          <div class="flex items-center gap-2"><div class="w-3 h-3 rounded" style="background:var(--crl-info-3)"></div><span class="text-xs" style="color:var(--crl-neutral-4)">NETWORK 38%</span></div>
+          <div class="flex items-center gap-2"><div class="w-3 h-3 rounded" style="background:var(--crl-warning-3)"></div><span class="text-xs font-bold" style="color:var(--crl-warning-3)">ADMISSION 34%</span></div>
+          <div class="flex items-center gap-2"><div class="w-3 h-3 rounded" style="background:var(--crl-primary-2)"></div><span class="text-xs" style="color:var(--crl-neutral-4)">OTHER 19%</span></div>
+          <div class="flex items-center gap-2"><div class="w-3 h-3 rounded" style="background:var(--crl-neutral-6)"></div><span class="text-xs" style="color:var(--crl-neutral-4)">LOCK 0.1%</span></div>
+        </div>
+        <p class="text-xs mt-3 font-bold" style="color:var(--crl-info-2)">Throughput-bound</p>
+      </div>
+    </div>
+    <div class="mt-3 p-3 rounded-lg z-10" style="background:rgba(105,51,255,0.08);border:1px solid rgba(105,51,255,0.2)">
+      <p class="text-sm" style="color:var(--crl-neutral-4)"><i class="fa-solid fa-bolt mr-1" style="color:var(--crl-primary-2)"></i><span class="font-bold" style="color:var(--crl-primary-2)">Key Insight (c16):</span> Total samples dropped from ~10k/min to ~2.6k/min (4x reduction = 4x less total work). The even 33/33/33 split across lock, network, and CPU means no single bottleneck dominates &mdash; a healthier profile where each request completes faster.</p>
+    </div>
+  </div>
+</div>
+
+<!-- Slide 5: Job Workloads -->
+<div class="slide" data-index="5">
+  <div class="w-[1280px] h-[720px] flex flex-col relative overflow-hidden mx-auto shadow-2xl p-10" style="background:var(--crl-bg)">
+    <div class="crl-logo-beetle absolute top-6 right-6 z-10" style="width:36px;height:36px;opacity:0.9"></div>
+    <div class="crl-pattern"></div>
+    <div class="flex flex-col mb-3 z-10">
+      <div class="flex items-center gap-4 mb-2">
+        <div class="w-6 rounded-full" style="height:9px;background:var(--crl-success-3)"></div>
+        <h2 class="text-lg font-mono uppercase tracking-widest" style="color:var(--crl-success-3)">Job Attribution</h2>
+      </div>
+      <h1 class="text-3xl font-display font-bold text-white">ASH Attributes Work to Individual Jobs</h1>
+      <p class="mt-1 text-sm font-light" style="color:var(--crl-neutral-5)">Backup job 1166923013072584705 &mdash; 925 samples across all nodes</p>
+    </div>
+    <div class="flex-1 flex gap-5 z-10">
+      <div class="flex-1 flex flex-col gap-3">
+        <div class="card-glass rounded-xl p-3">
+          <h3 class="font-bold mb-2 text-sm" style="color:var(--crl-neutral-3)"><i class="fa-solid fa-server mr-2" style="color:var(--crl-success-3)"></i>Backup Job ASH Profile</h3>
+          <div class="space-y-1">
+            <div class="flex items-center gap-2"><span class="text-xs font-mono w-40" style="color:var(--crl-neutral-4)">kv-elastic-cpu-queue</span><div class="metric-bar" style="width:56%;background:var(--crl-warning-3);height:14px"></div><span class="text-xs font-mono" style="color:var(--crl-neutral-5)">517 (56%)</span></div>
+            <div class="flex items-center gap-2"><span class="text-xs font-mono w-40" style="color:var(--crl-neutral-4)">backupDataProcessor</span><div class="metric-bar" style="width:17%;background:var(--crl-teal);height:14px"></div><span class="text-xs font-mono" style="color:var(--crl-neutral-5)">156 (17%)</span></div>
+            <div class="flex items-center gap-2"><span class="text-xs font-mono w-40" style="color:var(--crl-neutral-4)">InboxRecv</span><div class="metric-bar" style="width:10%;background:var(--crl-info-3);height:14px"></div><span class="text-xs font-mono" style="color:var(--crl-neutral-5)">92 (10%)</span></div>
+          </div>
+        </div>
+        <div class="code-window" style="font-size:10px">
+          <div class="code-titlebar"><span class="text-xs font-mono" style="color:var(--crl-neutral-5)">ASH Query &mdash; Job Samples</span></div>
+          <pre class="p-2 font-mono" style="color:var(--crl-teal);line-height:1.3;margin:0"><code>SELECT work_event_type, work_event,
+       count(*) AS samples
+FROM crdb_internal.cluster_active_session_history
+WHERE workload_type = 'JOB'
+  AND workload_id = '1166923013072584705'
+GROUP BY 1, 2 ORDER BY samples DESC;</code></pre>
+        </div>
+        <div class="card-glass rounded-xl p-3">
+          <h3 class="font-bold mb-1 text-sm" style="color:var(--crl-neutral-3)">TPC-C Import Jobs (9 tables, 81k samples)</h3>
+          <div class="text-xs font-mono" style="color:var(--crl-neutral-4)">
+            <span style="color:var(--crl-teal)">readImportDataProcessor</span> 20k &bull;
+            <span style="color:var(--crl-warning-3)">ReplicationFlowControl</span> 15k &bull;
+            <span style="color:var(--crl-info-2)">InboxRecv</span> 14k
+          </div>
+          <p class="text-xs mt-1" style="color:var(--crl-neutral-5)">Second spike in elastic CPU tokens (17:10&ndash;17:20 in elastic CPU graph) corresponds to these import jobs</p>
+        </div>
+        <div class="p-3 rounded-lg" style="background:rgba(55,168,6,0.08);border:1px solid rgba(55,168,6,0.2)">
+          <p class="text-sm" style="color:var(--crl-neutral-4)"><i class="fa-solid fa-bolt mr-1" style="color:var(--crl-success-3)"></i><span class="font-bold" style="color:var(--crl-success-3)">Key Insight:</span> ASH shows the exact job ID (<span class="font-mono">1166923013072584705</span>) and its work profile &mdash; 56% of time spent in elastic admission throttling. The DB Console Jobs page shows job status and duration but not <em>where</em> the job spends its time (CPU vs. IO vs. admission vs. network).</p>
+        </div>
+      </div>
+      <div class="flex-1">
+        <img src="07-jobs-page.png" style="width:100%;border-radius:12px;border:1px solid var(--crl-border);max-height:560px;object-fit:cover;object-position:top;" alt="Jobs Page">
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Slide 6: System Workloads -->
+<div class="slide" data-index="6">
+  <div class="w-[1280px] h-[720px] flex flex-col relative overflow-hidden mx-auto shadow-2xl p-10" style="background:var(--crl-bg)">
+    <div class="crl-logo-beetle absolute top-6 right-6 z-10" style="width:36px;height:36px;opacity:0.9"></div>
+    <div class="crl-pattern"></div>
+    <div class="flex flex-col mb-3 z-10">
+      <div class="flex items-center gap-4 mb-2">
+        <div class="w-6 rounded-full" style="height:9px;background:var(--crl-teal)"></div>
+        <h2 class="text-lg font-mono uppercase tracking-widest" style="color:var(--crl-teal)">System Work</h2>
+      </div>
+      <h1 class="text-3xl font-display font-bold text-white">System Work as Proportion of Total Cluster Activity</h1>
+      <p class="mt-1 text-sm font-light" style="color:var(--crl-neutral-5)">ASH shows system work alongside foreground work in the same sample stream</p>
+    </div>
+    <div class="flex-1 flex gap-5 z-10">
+      <div class="flex-1 flex flex-col gap-3">
+        <div class="card-glass rounded-xl p-4 flex-1">
+          <h3 class="font-bold mb-3 text-sm" style="color:var(--crl-neutral-3)"><i class="fa-solid fa-gear mr-2" style="color:var(--crl-teal)"></i>System Work Per Phase</h3>
+          <div class="space-y-3">
+            <div>
+              <div class="flex items-center gap-2 mb-1"><div class="w-3 h-3 rounded" style="background:var(--crl-danger-3)"></div><span class="text-sm font-bold" style="color:var(--crl-danger-3)">KV c64 Phase</span></div>
+              <div class="flex items-center gap-2 ml-5">
+                <span class="text-xs font-mono w-48" style="color:var(--crl-neutral-4)">System = 22.6% of total</span>
+                <span class="text-xs font-mono" style="color:var(--crl-neutral-5)">INTENT_RESOLUTION = 96.2% of system</span>
+              </div>
+            </div>
+            <div>
+              <div class="flex items-center gap-2 mb-1"><div class="w-3 h-3 rounded" style="background:var(--crl-warning-3)"></div><span class="text-sm font-bold" style="color:var(--crl-warning-3)">KV c16 Phase</span></div>
+              <div class="flex items-center gap-2 ml-5">
+                <span class="text-xs font-mono w-48" style="color:var(--crl-neutral-4)">System = 13.9% of total</span>
+                <span class="text-xs font-mono" style="color:var(--crl-neutral-5)">INTENT_RESOLUTION = 99.4% of system</span>
+              </div>
+            </div>
+            <div>
+              <div class="flex items-center gap-2 mb-1"><div class="w-3 h-3 rounded" style="background:var(--crl-info-2)"></div><span class="text-sm font-bold" style="color:var(--crl-info-2)">KV 64KB Phase</span></div>
+              <div class="flex items-center gap-2 ml-5">
+                <span class="text-xs font-mono w-48" style="color:var(--crl-neutral-4)">System = 27.6% of total</span>
+                <span class="text-xs font-mono" style="color:var(--crl-neutral-5)">INTENT_RESOLUTION = 89.2% of system</span>
+              </div>
+            </div>
+          </div>
+          <div class="mt-4 p-3 rounded-lg" style="background:rgba(0,229,204,0.08);border:1px solid rgba(0,229,204,0.2)">
+            <p class="text-sm" style="color:var(--crl-neutral-4)"><i class="fa-solid fa-bolt mr-1" style="color:var(--crl-teal)"></i><span class="font-bold" style="color:var(--crl-teal)">Key Insight:</span> During KV 64KB, system work consumed 27.6% of total cluster activity &mdash; mostly intent resolution from heavy writes. ASH uniquely shows system work alongside foreground work in the same sample stream, letting you understand the full picture of cluster activity.</p>
+          </div>
+        </div>
+      </div>
+      <div class="flex-1 flex flex-col gap-3">
+        <img src="08-metrics-queues.png" style="width:100%;border-radius:12px;border:1px solid var(--crl-border);max-height:320px;object-fit:cover;object-position:top;" alt="Queues Dashboard">
+        <div class="card-glass rounded-xl p-3">
+          <h3 class="font-bold mb-1 text-sm" style="color:var(--crl-neutral-3)">Other System Events</h3>
+          <div class="text-xs font-mono" style="color:var(--crl-neutral-4)">
+            <span style="color:var(--crl-warning-3)">TXN_HEARTBEAT</span> 2,651 &bull;
+            <span style="color:var(--crl-info-2)">RAFT_LOG_TRUNCATION</span> 2,522 &bull;
+            <span style="color:var(--crl-primary-2)">GC</span> 2,129 &bull;
+            <span style="color:var(--crl-teal)">LEASE_ACQUISITION</span> 698
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Slide 7: Key Takeaways -->
+<div class="slide" data-index="7">
+  <div class="w-[1280px] h-[720px] flex flex-col relative overflow-hidden mx-auto shadow-2xl p-10" style="background:var(--crl-bg)">
+    <div class="crl-logo-beetle absolute top-6 right-6 z-10" style="width:36px;height:36px;opacity:0.9"></div>
+    <div class="crl-pattern"></div>
+    <div class="flex flex-col mb-4 z-10">
+      <div class="flex items-center gap-4 mb-2">
+        <div class="w-6 rounded-full" style="height:9px;background:var(--crl-primary-3)"></div>
+        <h2 class="text-lg font-mono uppercase tracking-widest" style="color:var(--crl-primary-3)">Key Takeaways</h2>
+      </div>
+      <h1 class="text-3xl font-display font-bold text-white">ASH Complements Existing Observability</h1>
+    </div>
+    <div class="flex-1 flex gap-6 z-10">
+      <div class="flex-1 flex flex-col gap-3">
+        <div class="card-glass rounded-xl p-4">
+          <div class="flex items-start gap-3">
+            <div class="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0" style="background:rgba(255,59,78,0.1)">
+              <i class="fa-solid fa-lock text-sm" style="color:var(--crl-danger-3)"></i>
+            </div>
+            <div>
+              <h3 class="font-bold text-sm mb-1" style="color:var(--crl-neutral-3)">Root Cause Identification</h3>
+              <p class="text-sm" style="color:var(--crl-neutral-5)">DB Console shows contention exists; ASH reveals it is <span class="font-mono">LockWait</span> (hot keys) vs. <span class="font-mono">LatchWait</span> (serialization) &mdash; directly actionable</p>
+            </div>
+          </div>
+        </div>
+        <div class="card-glass rounded-xl p-4">
+          <div class="flex items-start gap-3">
+            <div class="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0" style="background:rgba(255,165,59,0.1)">
+              <i class="fa-solid fa-fingerprint text-sm" style="color:var(--crl-warning-3)"></i>
+            </div>
+            <div>
+              <h3 class="font-bold text-sm mb-1" style="color:var(--crl-neutral-3)">Workload ID Attribution</h3>
+              <p class="text-sm" style="color:var(--crl-neutral-5)">ASH attributes admission events to specific <span class="font-mono">workload_id</span>s &mdash; the exact statement fingerprint or job ID being throttled, not just aggregate metrics</p>
+            </div>
+          </div>
+        </div>
+        <div class="card-glass rounded-xl p-4">
+          <div class="flex items-start gap-3">
+            <div class="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0" style="background:rgba(55,168,6,0.1)">
+              <i class="fa-solid fa-briefcase text-sm" style="color:var(--crl-success-3)"></i>
+            </div>
+            <div>
+              <h3 class="font-bold text-sm mb-1" style="color:var(--crl-neutral-3)">Job-Level Visibility</h3>
+              <p class="text-sm" style="color:var(--crl-neutral-5)">Jobs page shows status/duration; ASH reveals where each job spends its time (CPU, IO, admission, network) by exact job ID</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="flex-1 flex flex-col gap-3">
+        <div class="card-glass rounded-xl p-4">
+          <div class="flex items-start gap-3">
+            <div class="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0" style="background:rgba(0,229,204,0.1)">
+              <i class="fa-solid fa-gears text-sm" style="color:var(--crl-teal)"></i>
+            </div>
+            <div>
+              <h3 class="font-bold text-sm mb-1" style="color:var(--crl-neutral-3)">System Work Proportion</h3>
+              <p class="text-sm" style="color:var(--crl-neutral-5)">ASH shows system work as a fraction of total cluster activity &mdash; 27.6% during heavy writes, enabling full-picture analysis</p>
+            </div>
+          </div>
+        </div>
+        <div class="card-glass rounded-xl p-4">
+          <div class="flex items-start gap-3">
+            <div class="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0" style="background:rgba(0,85,255,0.1)">
+              <i class="fa-solid fa-database text-sm" style="color:var(--crl-info-2)"></i>
+            </div>
+            <div>
+              <h3 class="font-bold text-sm mb-1" style="color:var(--crl-neutral-3)">SQL-Queryable</h3>
+              <p class="text-sm" style="color:var(--crl-neutral-5)">All data available via <span class="font-mono">crdb_internal.cluster_active_session_history</span> &mdash; slice and dice with standard SQL, no external tooling needed</p>
+            </div>
+          </div>
+        </div>
+        <div class="p-4 rounded-xl" style="background:rgba(105,51,255,0.08);border:1px solid rgba(105,51,255,0.3)">
+          <h3 class="font-bold text-sm mb-2" style="color:var(--crl-primary-2)"><i class="fa-solid fa-lightbulb mr-2"></i>Summary</h3>
+          <p class="text-sm leading-relaxed" style="color:var(--crl-neutral-4)">ASH answers <em>"where is time being spent?"</em> at a granularity that metrics dashboards cannot. Its key differentiator is <span class="font-bold" style="color:var(--crl-primary-2)">workload_id attribution</span> &mdash; attributing work to specific statements, jobs, and system tasks with proportional breakdowns across event types.</p>
+          <p class="text-sm leading-relaxed mt-2" style="color:var(--crl-neutral-4)">Together with existing DB Console metrics, ASH provides a complete picture: metrics show <em>what happened</em>, ASH shows <em>why</em>.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<!-- Progress bar -->
+<div id="progress" style="position:fixed;bottom:0;left:0;height:5px;background:linear-gradient(to right, var(--crl-teal), var(--crl-gradient-purple));transition:width 0.3s ease;z-index:100"></div>
+
+<script>
+var slides = document.querySelectorAll('.slide');
+var total = slides.length;
+var current = parseInt(location.hash.replace('#','')) - 1 || 0;
+if (current < 0 || current >= total) current = 0;
+var progress = document.getElementById('progress');
+
+function updateProgress() {
+    progress.style.width = ((current + 1) / total * 100) + '%';
+}
+
+function goTo(n) {
+    if (n < 0 || n >= total) return;
+    slides[current].classList.remove('active');
+    slides[current].style.display = 'none';
+    current = n;
+    slides[current].classList.add('active');
+    slides[current].style.display = 'block';
+    location.hash = current + 1;
+    updateProgress();
+    scaleSlide();
+}
+
+function scaleSlide() {
+    var slide = slides[current];
+    var inner = slide.querySelector(':scope > div');
+    if (!inner) return;
+    var sw = 1280, sh = 720;
+    var vw = window.innerWidth, vh = window.innerHeight;
+    var scale = Math.min(vw / sw, vh / sh);
+    inner.style.transform = 'translate(-50%, -50%) scale(' + scale + ')';
+}
+
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') {
+        e.preventDefault(); goTo(current + 1);
+    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+        e.preventDefault(); goTo(current - 1);
+    } else if (e.key === 'Home') {
+        e.preventDefault(); goTo(0);
+    } else if (e.key === 'End') {
+        e.preventDefault(); goTo(total - 1);
+    } else if (e.key === 'f') {
+        document.documentElement.requestFullscreen();
+    }
+});
+
+window.addEventListener('resize', scaleSlide);
+
+for (var i = 0; i < total; i++) {
+    slides[i].style.display = 'none';
+    slides[i].classList.remove('active');
+}
+slides[current].classList.add('active');
+slides[current].style.display = 'block';
+location.hash = current + 1;
+updateProgress();
+scaleSlide();
+</script>
+</body>
+</html>
